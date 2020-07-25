@@ -2,7 +2,7 @@
 
 static int	ft_strlen(char *str)
 {
-	int	len = 0;
+	int len = 0;
 
 	while (*str++)
 		len++;
@@ -24,10 +24,11 @@ static int	ft_strchr(char *str, int c)
 
 static char	*ft_strdup(char *str)
 {
-	char	*ret;
+	int		len = ft_strlen(str);
 	int		i = -1;
+	char	*ret;
 
-	if (!(ret = malloc(sizeof(char) * ft_strlen(str) + 1)))
+	if (!(ret = malloc(sizeof(char) * len + 1)))
 		return (NULL);
 	while (str[++i])
 		ret[i] = str[i];
@@ -37,10 +38,10 @@ static char	*ft_strdup(char *str)
 
 static char	*ft_strjoin(char *str1, char *str2)
 {
-	char	*ret;
+	int		len = ft_strlen(str1) + ft_strlen(str2);
 	int		i = -1;
 	int		j = -1;
-	int		len = ft_strlen(str1) + ft_strlen(str2);
+	char	*ret;
 
 	if (!str1 || !str2)
 		return (ft_strdup(""));
@@ -54,27 +55,29 @@ static char	*ft_strjoin(char *str1, char *str2)
 	return (ret);
 }
 
-static char	*ft_substr(char *str, int start, int len)
+static char *ft_substr(char *str, int start, int len)
 {
-	char	*ret;
 	int		i = start;
 	int		j = -1;
+	char	*ret;
 
+	if (!str)
+		return (NULL);
 	if (start >= ft_strlen(str))
 		return (ft_strdup(""));
 	if (!(ret = malloc(sizeof(char) * len + 1)))
 		return (NULL);
-	while (++j < len && str)
+	while (++j < len && str[i])
 		ret[j] = str[i++];
 	ret[j] = '\0';
 	return (ret);
 }
 
-static char	*ft_clean_list(char **line, char *list, int size)
+static char *ft_clean_list(char **line, char *list, int size)
 {
+	int	i = -1;
+	int	len = ft_strlen(list);
 	char	*tmp;
-	int		len = ft_strlen(list);
-	int		i = -1;
 
 	while (list[++i])
 		if (list[i] == '\n')
@@ -94,9 +97,9 @@ static char	*ft_clean_list(char **line, char *list, int size)
 	return (list);
 }
 
-static char	*ft_list(char *list, char *buf)
+static char *ft_list(char *list, char *buf)
 {
-	char	*tmp;
+	char *tmp;
 
 	if (list)
 	{
@@ -109,16 +112,16 @@ static char	*ft_list(char *list, char *buf)
 	return (list);
 }
 
-int			get_next_line(char **line)
+int get_next_line(char **line)
 {
-	static char	*list;
+	static char *list;
 	char		buf[BUFFER_SIZE + 1];
-	int			size = 0;
+	int			size;
 	int			fd = 0;
 
-	if (line == NULL || read(fd, buf, 0) != 0)
+	if (!line || read(fd, buf, 0) != 0)
 		return (-1);
-	while ((size = read(fd, buf, BUFFER_SIZE)) > 0)
+	while ((size = read(fd, buf, BUFFER_SIZE)))
 	{
 		if (size < 0)
 			return (-1);
@@ -136,19 +139,4 @@ int			get_next_line(char **line)
 	if (!(list = ft_clean_list(line, list, size)))
 		return (0);
 	return (1);
-}
-
-#include <stdio.h>
-
-int		main(void)
-{
-	char	*line;
-
-	while (get_next_line(&line) > 0)
-	{
-		printf("%s\n", line);
-		free(line);
-	}
-	printf("%s\n", line);
-	free(line);
 }
