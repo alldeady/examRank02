@@ -15,10 +15,7 @@ static void	ft_putchar(int c)
 static void	ft_putstr(char *str, int len)
 {
 	while (*str && len--)
-	{
-		ft_putchar(*str);
-		str++;
-	}
+		{ft_putchar(*str); str++;}
 }
 
 static int	ft_strlen(char *str)
@@ -46,18 +43,12 @@ static char	*ft_itoa(long long nbr, int base)
 	if (nbr < 0)
 		len++;
 	while (nbr_tmp)
-	{
-		nbr_tmp /= base;
-		len++;
-	}
+		{nbr_tmp /= base; len++;}
 	if (!(ret = malloc(sizeof(char) * len + 1)))
 		return (NULL);
 	ret[len] = '\0';
 	if (nbr < 0)
-	{
-		nbr *= -1;
-		ret[0] = '-';
-	}
+		{nbr *= -1; ret[0] = '-';}
 	while (nbr)
 	{
 		ret[len - 1] = nbr % base + (nbr % base > 9 ? 87 : 48);
@@ -97,7 +88,7 @@ static void	ft_print_d(int nbr_tmp)
 		while (g_dot - len > 0)
 			{ft_putchar('0'); g_dot--;}
 	ft_putstr(str, len);
-
+	free(str);
 }
 
 static void	ft_print_x(unsigned int nbr)
@@ -125,6 +116,7 @@ static void	ft_print_x(unsigned int nbr)
 		while (g_dot - len > 0)
 			{ft_putchar('0'); g_dot--;}
 	ft_putstr(str, len);
+	free(str);
 }
 
 static void	ft_print_s(char *str)
@@ -147,16 +139,6 @@ static void	ft_print_s(char *str)
 	}
 	else
 		ft_putstr(str, len);
-}
-
-static void	ft_spreader(int c, va_list av)
-{
-	if (c == 's')
-		ft_print_s(va_arg(av, char *));
-	else if (c == 'd')
-		ft_print_d(va_arg(av, int));
-	else if (c == 'x')
-		ft_print_x(va_arg(av, unsigned int));
 }
 
 static int	ft_dot(const char *str, int i)
@@ -182,7 +164,6 @@ int ft_printf(const char *str, ... )
 
 	g_return = 0;
 	va_start(av, str);
-
 	while (str[++i])
 	{
 		if (str[i] == '%' && str[i + 1])
@@ -194,8 +175,12 @@ int ft_printf(const char *str, ... )
 				i = ft_width(str, i);
 			if (str[i] == '.')
 				i = ft_dot(str, i);
-			if (str[i] == 's' || str[i] == 'd' || str[i] == 'x')
-				ft_spreader(str[i], av);
+			if (str[i] == 's')
+				ft_print_s(va_arg(av, char *));
+			else if (str[i] == 'd')
+				ft_print_d(va_arg(av, int));
+			else if (str[i] == 'x')
+				ft_print_x(va_arg(av, unsigned int));
 		}
 		else if (str[i] != '%')
 			ft_putchar(str[i]);

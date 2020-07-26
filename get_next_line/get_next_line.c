@@ -75,8 +75,8 @@ static char *ft_substr(char *str, int start, int len)
 
 static char *ft_clean_list(char **line, char *list, int size)
 {
-	int	i = -1;
-	int	len = ft_strlen(list);
+	int		i = -1;
+	int		len = ft_strlen(list);
 	char	*tmp;
 
 	while (list[++i])
@@ -99,7 +99,7 @@ static char *ft_clean_list(char **line, char *list, int size)
 
 static char *ft_list(char *list, char *buf)
 {
-	char *tmp;
+	char	*tmp;
 
 	if (list)
 	{
@@ -112,9 +112,9 @@ static char *ft_list(char *list, char *buf)
 	return (list);
 }
 
-int get_next_line(char **line)
+int			get_next_line(char **line)
 {
-	static char *list;
+	static char	*list;
 	char		buf[BUFFER_SIZE + 1];
 	int			size;
 	int			fd = 0;
